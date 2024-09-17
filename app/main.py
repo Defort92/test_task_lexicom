@@ -19,9 +19,9 @@ app = FastAPI(
 
 
 @app.post("/write_data", status_code=status.HTTP_201_CREATED)
-def write_data_endpoint(request: WriteDataRequest, client: Redis = Depends(get_redis_client)):
+async def write_data_endpoint(request: WriteDataRequest, client: aioredis.Redis = Depends(get_redis_client)):
     try:
-        write_data(client, request.phone, request.address)
+        await write_data(client, request.phone, request.address)
         logger.info(f"Data written/updated for phone: {request.phone}")
         return {"message": "Data successfully written/updated."}
     except Exception as e:
@@ -30,9 +30,9 @@ def write_data_endpoint(request: WriteDataRequest, client: Redis = Depends(get_r
 
 
 @app.get("/check_data", response_model=CheckDataResponse)
-def check_data_endpoint(phone: str, client: Redis = Depends(get_redis_client)):
+async def check_data_endpoint(phone: str, client: aioredis.Redis = Depends(get_redis_client)):
     try:
-        address = get_address(client, phone)
+        address = await get_address(client, phone)
         if address is None:
             error_logger.warning(f"Address not found for phone: {phone}")
             raise HTTPException(status_code=404, detail="Address not found for the given phone number.")

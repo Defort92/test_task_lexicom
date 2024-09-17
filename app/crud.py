@@ -1,8 +1,7 @@
-from redis import Redis
+import aioredis
 
+async def write_data(client: aioredis.Redis, phone: str, address: str):
+    await client.set(phone, address)
 
-def write_data(client: Redis, phone: str, address: str):
-    client.set(phone, address)
-
-def get_address(client: Redis, phone: str):
-    return client.get(phone)
+async def get_address(client: aioredis.Redis, phone: str):
+    return await client.get(phone)

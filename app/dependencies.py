@@ -1,7 +1,11 @@
-from rediscluster import RedisCluster
+import aioredis
 from app.config import settings
 
-def get_redis_client():
+
+async def get_redis_client():
     startup_nodes = settings.get_redis_startup_nodes()
-    client = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
+    client = await aioredis.create_redis_pool(
+        startup_nodes,
+        decode_responses=True
+    )
     return client

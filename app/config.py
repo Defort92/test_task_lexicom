@@ -14,7 +14,7 @@ class Settings(BaseSettings):
         hosts = self.redis_hosts.split(',')
         for host in hosts:
             host_info = host.split(':')
-            nodes.append({"host": host_info[0], "port": host_info[1]})
+            nodes.append(f"redis://{host_info[0]}:{host_info[1]}")
         return nodes
 
 
